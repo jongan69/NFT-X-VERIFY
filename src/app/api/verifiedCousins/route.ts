@@ -19,7 +19,13 @@ export async function GET(): Promise<NextResponse<VerifiedCousinsResponse>> {
     await connectDB();
 
     const verifiedCousins = await User.find(
-      {},
+      {
+        $or: [
+          { xUsername: { $exists: true } },
+          { xHandle: { $exists: true } },
+          { profilePicture: { $exists: true } }
+        ]
+      },
       { xUsername: 1, xHandle: 1, profilePicture: 1, _id: 0 },
     );
 
@@ -27,9 +33,9 @@ export async function GET(): Promise<NextResponse<VerifiedCousinsResponse>> {
       (cousin: IUser): VerifiedCousin => {
         const plainCousin = cousin.toObject() as IUser;
         return {
-          xUsername: plainCousin.xUsername,
-          xHandle: plainCousin.xHandle,
-          profilePicture: plainCousin.profilePicture,
+          xUsername: plainCousin.xUsername ?? undefined,
+          xHandle: plainCousin.xHandle ?? undefined,
+          profilePicture: plainCousin.profilePicture ?? undefined,
         };
       },
     );
