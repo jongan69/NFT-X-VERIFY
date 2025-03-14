@@ -3,14 +3,15 @@ import clsx from "clsx";
 
 import { inter } from "@/utils/fonts";
 import { Providers } from "./providers";
-
+import WalletContextProvider from "@/components/Wallet/WalletContextProvider";
 import "@radix-ui/themes/styles.css";
-
+import { Toaster } from "react-hot-toast";
 import "@/styles/reset.css";
 import "@/styles/globals.css";
+import { ThemeProvider } from "@/components/Theme/ThemeProvider";
 
 export const metadata: Metadata = {
-  title: "Next.js + Radix Themes",
+  title: "Cousin NFT X Verification",
 };
 
 const RootLayout = ({ children }: { children: React.ReactNode }) => (
@@ -20,7 +21,12 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => (
     suppressHydrationWarning
   >
     <body>
-      <Providers>{children}</Providers>
+      <ThemeProvider attribute="class">
+        <WalletContextProvider>
+          <Toaster />
+          <Providers>{children}</Providers>
+        </WalletContextProvider>
+      </ThemeProvider>
     </body>
   </html>
 );
