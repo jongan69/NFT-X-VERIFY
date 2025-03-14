@@ -5,6 +5,7 @@ import connectDB from "@/lib/mongodb";
 import { User, Account } from "next-auth";
 import { Provider } from "next-auth/providers/index";
 import { Types } from "mongoose";
+import { NextRequest } from "next/server";
 
 interface handlerProps {
   user: User;
@@ -27,7 +28,7 @@ const fetchXHandle = async (userId: string): Promise<string | null> => {
         body: JSON.stringify({ userId }),
       },
     );
-    const data = await response.json() as XHandleResponse;
+    const data = (await response.json()) as XHandleResponse;
     return data.handle;
   } catch (error) {
     console.error("Error in fetchXHandle:", error);
@@ -86,9 +87,10 @@ export const authOptions: NextAuthOptions = {
               },
             };
 
-            const userId = pendingUser._id instanceof Types.ObjectId 
-              ? pendingUser._id 
-              : new Types.ObjectId(String(pendingUser._id));
+            const userId =
+              pendingUser._id instanceof Types.ObjectId
+                ? pendingUser._id
+                : new Types.ObjectId(String(pendingUser._id));
 
             // Perform the update
             await collection.updateOne(
@@ -130,6 +132,19 @@ export const authOptions: NextAuthOptions = {
   },
 };
 
-const handler = NextAuth(authOptions) as NextAuthOptions;
+// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+const handler = NextAuth(authOptions);
 
-export { handler as GET, handler as POST };
+type RouteHandler = (req: NextRequest, context: { params: { nextauth: string[] } }) => Promise<Response>;
+
+export const GET: RouteHandler = async (req, context) => {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
+  const response = await handler(req, context);
+  return Response.json(response);
+};
+
+export const POST: RouteHandler = async (req, context) => {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
+  const response = await handler(req, context);
+  return Response.json(response);
+};

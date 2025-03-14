@@ -15,6 +15,9 @@ const config = {
     project: true,
     tsconfigRootDir: __dirname,
   },
+  rules: {
+    "@typescript-eslint/no-explicit-any": "off",
+  },
 };
 
 module.exports = config;

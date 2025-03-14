@@ -27,7 +27,7 @@ const fetchVerifiedCousins = async (): Promise<VerifiedCousinsResponse> => {
       cache: "no-store",
     },
   );
-  const data = await response.json() as VerifiedCousinsResponse;
+  const data = (await response.json()) as VerifiedCousinsResponse;
   return data;
 };
 

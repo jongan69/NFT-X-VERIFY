@@ -23,14 +23,16 @@ export async function GET(): Promise<NextResponse<VerifiedCousinsResponse>> {
       { xUsername: 1, xHandle: 1, profilePicture: 1, _id: 0 },
     );
 
-    const verifiedCousinsArray = verifiedCousins.map((cousin: IUser): VerifiedCousin => {
-      const plainCousin = cousin.toObject() as IUser;
-      return {
-        xUsername: plainCousin.xUsername,
-        xHandle: plainCousin.xHandle,
-        profilePicture: plainCousin.profilePicture,
-      };
-    });
+    const verifiedCousinsArray = verifiedCousins.map(
+      (cousin: IUser): VerifiedCousin => {
+        const plainCousin = cousin.toObject() as IUser;
+        return {
+          xUsername: plainCousin.xUsername,
+          xHandle: plainCousin.xHandle,
+          profilePicture: plainCousin.profilePicture,
+        };
+      },
+    );
     return NextResponse.json({
       verifiedCousins: verifiedCousinsArray,
       status: 200,
