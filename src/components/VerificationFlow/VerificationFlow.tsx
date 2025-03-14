@@ -177,7 +177,7 @@ export const VerificationFlow = () => {
                 </Text>
                 <ClientWalletButton />
                 <Text size="2" color="gray" align="center">
-                  Make sure your wallet contains the required NFT
+                  Make sure your wallet contains your cousin
                 </Text>
               </Flex>
             )}
@@ -201,7 +201,7 @@ export const VerificationFlow = () => {
                       Required NFT not found in wallet
                     </Text>
                     <Text size="2" color="gray">
-                      Please make sure you have the correct NFT
+                      Please make sure you have your cousin NFT in your wallet
                     </Text>
                   </Flex>
                 )}
