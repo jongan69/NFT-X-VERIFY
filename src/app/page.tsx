@@ -1,8 +1,8 @@
-import { Playground } from "@/components/Playground";
+import { VerificationFlow } from "@/components/VerificationFlow/VerificationFlow";
 
 const Page = () => (
   <main>
-    <Playground />
+    <VerificationFlow />
   </main>
 );
 
