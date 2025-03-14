@@ -1,0 +1,40 @@
+.radix-themes {
+  /* Use pointer cursor for interactive elements */
+  --cursor-button: pointer;
+  --cursor-checkbox: pointer;
+  --cursor-disabled: default;
+  --cursor-link: pointer;
+  --cursor-menu-item: pointer;
+  --cursor-radio: pointer;
+  --cursor-slider-thumb: pointer;
+  --cursor-slider-thumb-active: pointer;
+  --cursor-switch: pointer;
+
+  /* Use Inter as the default font family */
+  --default-font-family: var(--font-inter);
+}
+
+/* Add minimalistic transition to interactive elements */
+.transition,
+.rt-BaseButton,
+.rt-TabsTrigger,
+.rt-Link,
+.rt-TextFieldInput,
+.rt-CheckboxButton,
+.rt-BaseMenuItem {
+  transition-property: color, background-color, border-color,
+    text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter,
+    backdrop-filter;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+
+/* Makes containers to have a proper inline padding on all screens */
+.rt-ContainerInner {
+  width: 92%;
+}
+
+/* Enable smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
