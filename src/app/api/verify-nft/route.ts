@@ -19,7 +19,8 @@ interface VerifyRequest {
 }
 
 const NFT_TO_CHECK = process.env.NFT_ADDRESS;
-const RPC_ENDPOINT = process.env.SOLANA_RPC_URL ?? "https://api.mainnet-beta.solana.com";
+const RPC_ENDPOINT =
+  process.env.SOLANA_RPC_URL ?? "https://api.mainnet-beta.solana.com";
 
 const rateLimitMiddleware = rateLimit();
 
@@ -31,7 +32,7 @@ export async function POST(req: Request) {
       return rateLimitResponse;
     }
 
-    const body = await req.json() as VerifyRequest;
+    const body = (await req.json()) as VerifyRequest;
     const { walletAddress, signature, message } = body;
     console.log("Received verification request for wallet:", walletAddress);
 
@@ -94,14 +95,16 @@ export async function POST(req: Request) {
     for (const asset of assets) {
       console.log("Checking NFT:", {
         mint: asset.mint.publicKey.toString(),
-        collection: asset.metadata.collection?.__option === "Some" 
-          ? asset.metadata.collection.value?.key?.toString() 
-          : undefined,
+        collection:
+          asset.metadata.collection?.__option === "Some"
+            ? asset.metadata.collection.value?.key?.toString()
+            : undefined,
       });
 
       if (
         asset.metadata.collection.__option === "Some" &&
-        asset.metadata.collection.value?.key?.toString() === nftCollectionPubKey.toString()
+        asset.metadata.collection.value?.key?.toString() ===
+          nftCollectionPubKey.toString()
       ) {
         hasNFT = true;
         console.log("Found matching NFT from collection!");
@@ -136,9 +139,10 @@ export async function POST(req: Request) {
 
       // Log the complete user record
       console.log("User record updated:", {
-        id: updatedUser._id instanceof mongoose.Types.ObjectId 
-          ? updatedUser._id.toString() 
-          : String(updatedUser._id),
+        id:
+          updatedUser._id instanceof mongoose.Types.ObjectId
+            ? updatedUser._id.toString()
+            : String(updatedUser._id),
         walletAddress: updatedUser.walletAddress,
         verificationToken: updatedUser.verificationToken,
         expiry: updatedUser.verificationTokenExpiry,

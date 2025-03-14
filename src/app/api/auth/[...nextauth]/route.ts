@@ -4,6 +4,7 @@ import { User as DBUser, IUser } from "@/models/User";
 import connectDB from "@/lib/mongodb";
 import { User, Account } from "next-auth";
 import { Provider } from "next-auth/providers/index";
+import { NextRequest, NextResponse } from "next/server";
 
 interface TwitterApiResponse {
   data: {
@@ -15,8 +16,6 @@ interface handlerProps {
   user: User;
   account: Account | null;
 }
-// Store wallet addresses temporarily
-const walletStore = new Map<string, string>();
 
 const fetchXHandle = async (
   userId: string,
@@ -31,27 +30,27 @@ const fetchXHandle = async (
         },
       },
     );
-    
+
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
-    
-    const jsonResponse = await response.json() as TwitterApiResponse;
-    
+
+    const jsonResponse = (await response.json()) as TwitterApiResponse;
+
     // Type guard to validate the response structure
     if (
-      typeof jsonResponse === 'object' &&
+      typeof jsonResponse === "object" &&
       jsonResponse !== null &&
-      'data' in jsonResponse &&
-      typeof jsonResponse.data === 'object' &&
+      "data" in jsonResponse &&
+      typeof jsonResponse.data === "object" &&
       jsonResponse.data !== null &&
-      'username' in jsonResponse.data &&
-      typeof jsonResponse.data.username === 'string'
+      "username" in jsonResponse.data &&
+      typeof jsonResponse.data.username === "string"
     ) {
       return jsonResponse.data.username;
     }
-    
-    console.error('Invalid response structure from Twitter API:', jsonResponse);
+
+    console.error("Invalid response structure from Twitter API:", jsonResponse);
     return null;
   } catch (error) {
     console.error("Error fetching X handle:", error);
@@ -59,7 +58,7 @@ const fetchXHandle = async (
   }
 };
 
-const handler: NextAuthOptions = NextAuth({
+const authOptions: NextAuthOptions = {
   providers: [
     TwitterProvider({
       clientId: process.env.TWITTER_CLIENT_ID!,
@@ -155,7 +154,16 @@ const handler: NextAuthOptions = NextAuth({
     signIn: "/",
     error: "/", // Redirect to home page on error
   },
-}) as NextAuthOptions;
+};
 
-// Export the handler and the wallet store
-export { handler as GET, handler as POST, walletStore };
+type NextAuthHandler = (req: NextRequest) => Promise<NextResponse>;
+
+const handler = NextAuth(authOptions) as NextAuthHandler;
+
+export async function GET(request: NextRequest): Promise<NextResponse> {
+  return handler(request);
+}
+
+export async function POST(request: NextRequest): Promise<NextResponse> {
+  return handler(request);
+}

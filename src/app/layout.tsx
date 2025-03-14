@@ -3,7 +3,7 @@ import clsx from "clsx";
 
 import { inter } from "@/utils/fonts";
 import { Providers } from "./providers";
-import WalletContextProvider from "@/components/Wallet/WalletContextProvider";
+import { WalletContextProvider } from "@/components/Wallet/WalletContextProvider";
 import "@radix-ui/themes/styles.css";
 import { Toaster } from "react-hot-toast";
 import "@/styles/reset.css";

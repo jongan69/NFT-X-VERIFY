@@ -49,7 +49,9 @@ export const VerificationFlow = () => {
             throw new Error("Wallet does not support message signing");
           }
           // Use a more specific type for the signMessage function
-          const signMessageFn = signMessage as (message: Uint8Array) => Promise<Uint8Array>;
+          const signMessageFn = signMessage as (
+            message: Uint8Array,
+          ) => Promise<Uint8Array>;
           signature = await signMessageFn(messageBytes);
         } catch (error) {
           console.error("Error signing message:", error);
@@ -201,11 +203,11 @@ export const VerificationFlow = () => {
                 <Text size="3" align="center" color="gray">
                   Now, let&apos;s link your X account
                 </Text>
-                <Button 
-                  size="3" 
+                <Button
+                  size="3"
                   onClick={() => {
                     void handleXLink();
-                  }} 
+                  }}
                   disabled={isXLinking}
                 >
                   Link X Account
