@@ -1,7 +1,7 @@
 "use client";
 
 import { useWallet } from "@solana/wallet-adapter-react";
-import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
+import ClientWalletButton from "../Wallet/ClientWalletButton";
 import { useEffect, useState, useCallback } from "react";
 import {
   Button,
@@ -119,7 +119,6 @@ export const VerificationFlow = () => {
 
     try {
       setIsXLinking(true);
-      console.log("Starting Twitter OAuth with token:", verificationToken);
       // Store token before OAuth
       const response = await fetch("/api/store-token", {
         method: "POST",
@@ -160,37 +159,51 @@ export const VerificationFlow = () => {
         gap="6"
         align="center"
         justify="center"
-        style={{ minHeight: "80vh" }}
+        style={{ minHeight: "30vh" }}
       >
         <Card size="3" style={{ width: "100%", maxWidth: "500px" }}>
           <Flex direction="column" gap="4" align="center">
             <Heading size="6" align="center">
-              NFT Verification & X Link
+              Cousin NFT Verification & X Link
             </Heading>
+            <Text size="3" color="gray" align="center">
+              Follow these steps to join our exclusive community
+            </Text>
 
             {!connected && (
               <Flex direction="column" gap="3" align="center">
                 <Text size="4" align="center" color="gray">
-                  Connect your wallet to begin verification
+                  Step 1: Connect your wallet to begin verification
                 </Text>
-                <WalletMultiButton />
+                <ClientWalletButton />
+                <Text size="2" color="gray" align="center">
+                  Make sure your wallet contains the required NFT
+                </Text>
               </Flex>
             )}
 
             {connected && !hasNFT && (
               <Flex direction="column" gap="3" align="center">
                 <Text size="4" align="center">
-                  Verifying NFT ownership
+                  Step 2: Verifying NFT ownership
                 </Text>
                 {isVerifying ? (
-                  <Flex gap="2" align="center">
-                    <Spinner size="2" />
+                  <Flex direction="column" gap="3" align="center">
+                    <Spinner size="3" />
                     <Text>Checking your wallet...</Text>
+                    <Text size="2" color="gray">
+                      Please sign the message when prompted
+                    </Text>
                   </Flex>
                 ) : (
-                  <Text color="red" size="3">
-                    Required NFT not found in wallet
-                  </Text>
+                  <Flex direction="column" gap="2" align="center">
+                    <Text color="red" size="3">
+                      Required NFT not found in wallet
+                    </Text>
+                    <Text size="2" color="gray">
+                      Please make sure you have the correct NFT
+                    </Text>
+                  </Flex>
                 )}
               </Flex>
             )}
@@ -201,7 +214,10 @@ export const VerificationFlow = () => {
                   NFT Verified! 🎉
                 </Text>
                 <Text size="3" align="center" color="gray">
-                  Now, let&apos;s link your X account
+                  Step 3: Link your X account
+                </Text>
+                <Text size="2" color="gray" align="center">
+                  Connect your X account to join the community
                 </Text>
                 <Button
                   size="3"
@@ -209,8 +225,16 @@ export const VerificationFlow = () => {
                     void handleXLink();
                   }}
                   disabled={isXLinking}
+                  style={{ minWidth: "200px" }}
                 >
-                  Link X Account
+                  {isXLinking ? (
+                    <Flex gap="2" align="center">
+                      <Spinner size="2" />
+                      <Text>Connecting...</Text>
+                    </Flex>
+                  ) : (
+                    "Link X Account"
+                  )}
                 </Button>
               </Flex>
             )}

@@ -1,0 +1,108 @@
+.heroSection {
+  position: relative;
+  padding: 2rem 0;
+  background-image: url("/home.PNG");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  min-height: 50vh;
+  display: flex;
+  align-items: flex-start;
+  width: 100%;
+  overflow: hidden;
+  opacity: 1;
+}
+
+/* .heroOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.3);
+  z-index: 1;
+} */
+
+.heroSection > div {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  padding: 2rem 1rem;
+  margin-top: 2rem;
+}
+
+.animatedTitle {
+  max-width: 800px;
+  animation: fadeInUp 1s ease-out;
+  color: white;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  margin: 0 auto;
+  word-wrap: break-word;
+  hyphens: auto;
+}
+
+.animatedSubtitle {
+  max-width: 600px;
+  animation: fadeInUp 1s ease-out 0.3s backwards;
+  color: #000;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+  margin: 0 auto;
+  word-wrap: break-word;
+  hyphens: auto;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .heroSection {
+    min-height: 40vh;
+    padding: 1rem 0;
+  }
+
+  .heroSection > div {
+    padding: 1rem;
+    margin-top: 1rem;
+  }
+
+  .animatedTitle {
+    font-size: 2.5rem !important;
+    max-width: 90%;
+  }
+
+  .animatedSubtitle {
+    font-size: 1.2rem !important;
+    max-width: 90%;
+  }
+}
+
+@media (max-width: 480px) {
+  .heroSection {
+    min-height: 35vh;
+    padding: 0.5rem 0;
+  }
+
+  .heroSection > div {
+    padding: 0.5rem;
+    margin-top: 0.5rem;
+  }
+
+  .animatedTitle {
+    font-size: 2rem !important;
+    max-width: 95%;
+  }
+
+  .animatedSubtitle {
+    font-size: 1rem !important;
+    max-width: 95%;
+  }
+}

@@ -2,8 +2,14 @@ import { NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb";
 import { IUser, User } from "@/models/User";
 
+interface VerifiedCousin {
+  xUsername: string | undefined;
+  xHandle: string | undefined;
+  profilePicture: string | undefined;
+}
+
 interface VerifiedCousinsResponse {
-  verifiedCousins: string[];
+  verifiedCousins: VerifiedCousin[];
   error?: string;
   status: number;
 }
@@ -12,12 +18,19 @@ export async function GET(): Promise<NextResponse<VerifiedCousinsResponse>> {
   try {
     await connectDB();
 
-    const verifiedCousins = await User.find({ xUsername: { $exists: true } });
-    console.log(verifiedCousins);
-    const verifiedCousinsArray = verifiedCousins.map(
-      (cousin: IUser) => cousin.xUsername!,
+    const verifiedCousins = await User.find(
+      {},
+      { xUsername: 1, xHandle: 1, profilePicture: 1, _id: 0 },
     );
-    console.log(verifiedCousinsArray);
+
+    const verifiedCousinsArray = verifiedCousins.map((cousin: IUser): VerifiedCousin => {
+      const plainCousin = cousin.toObject() as IUser;
+      return {
+        xUsername: plainCousin.xUsername,
+        xHandle: plainCousin.xHandle,
+        profilePicture: plainCousin.profilePicture,
+      };
+    });
     return NextResponse.json({
       verifiedCousins: verifiedCousinsArray,
       status: 200,

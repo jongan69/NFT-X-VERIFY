@@ -68,62 +68,37 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Invalid signature" }, { status: 401 });
     }
 
-    console.log("Using RPC endpoint:", RPC_ENDPOINT);
-
     if (!NFT_TO_CHECK) {
       throw new Error("NFT_ADDRESS environment variable is not set");
     }
 
     const nftCollectionPubKey = publicKey(NFT_TO_CHECK);
-    console.log("NFT Collection Public Key:", nftCollectionPubKey.toString());
-
     // Use Solana's PublicKey for the wallet address
     const walletPubKey = publicKey(walletAddress);
-    console.log("Wallet Public Key:", walletPubKey.toString());
-
     // Create Umi instance
     const umi = createUmi(RPC_ENDPOINT).use(mplTokenMetadata());
-    console.log("Created Umi instance");
-
     // Fetch all NFTs owned by the wallet
-    console.log("Fetching NFTs owned by wallet...");
     const assets = await fetchAllDigitalAssetByOwner(umi, walletPubKey);
-    console.log("Found NFTs:", assets.length);
-
     // Check if any of the NFTs belong to our collection
     let hasNFT = false;
     for (const asset of assets) {
-      console.log("Checking NFT:", {
-        mint: asset.mint.publicKey.toString(),
-        collection:
-          asset.metadata.collection?.__option === "Some"
-            ? asset.metadata.collection.value?.key?.toString()
-            : undefined,
-      });
-
       if (
         asset.metadata.collection.__option === "Some" &&
         asset.metadata.collection.value?.key?.toString() ===
           nftCollectionPubKey.toString()
       ) {
         hasNFT = true;
-        console.log("Found matching NFT from collection!");
         break;
       }
     }
 
-    console.log("NFT ownership check result:", hasNFT);
+    console.log("Cousin ownership check result:", hasNFT);
 
     let verificationToken: string | null = null;
 
     if (hasNFT) {
-      console.log("NFT verified, connecting to MongoDB...");
       await connectDB();
-
-      console.log("Generating verification token...");
       verificationToken = crypto.randomBytes(32).toString("hex");
-      console.log("Generated verification token:", verificationToken);
-
       const updatedUser = await User.findOneAndUpdate<IUser>(
         { walletAddress },
         {
@@ -153,7 +128,6 @@ export async function POST(req: Request) {
       hasNFT,
       ...(verificationToken ? { verificationToken } : {}),
     };
-    console.log("Sending response:", response);
     return NextResponse.json(response);
   } catch (error) {
     console.error("Error verifying NFT:", error);
