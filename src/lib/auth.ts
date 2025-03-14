@@ -135,7 +135,10 @@ export const authOptions: NextAuthOptions = {
 // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 const handler = NextAuth(authOptions);
 
-type RouteHandler = (req: NextRequest, context: { params: { nextauth: string[] } }) => Promise<Response>;
+type RouteHandler = (
+  req: NextRequest,
+  context: { params: { nextauth: string[] } },
+) => Promise<Response>;
 
 export const GET: RouteHandler = async (req, context) => {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
