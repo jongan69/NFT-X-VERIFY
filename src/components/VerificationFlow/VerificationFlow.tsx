@@ -195,7 +195,11 @@ export const VerificationFlow = () => {
         }),
       });
 
-      const data = (await response.json()) as { success: boolean, error?: string, status?: number };
+      const data = (await response.json()) as {
+        success: boolean;
+        error?: string;
+        status?: number;
+      };
 
       if (!data.success) {
         throw new Error(data.error ?? "Failed to verify X handle");
