@@ -11,7 +11,11 @@ import {
   Text,
   Card,
   Spinner,
+  TextField,
+  Dialog,
 } from "@radix-ui/themes";
+import { PersonIcon } from "@radix-ui/react-icons";
+
 import { signIn } from "next-auth/react";
 import { toast } from "react-hot-toast";
 import bs58 from "bs58";
@@ -32,6 +36,9 @@ export const VerificationFlow = () => {
   const [isVerifying, setIsVerifying] = useState<boolean>(false);
   const [verificationToken, setVerificationToken] = useState<string>("");
   const [isXLinking, setIsXLinking] = useState<boolean>(false);
+  const [showManualInput, setShowManualInput] = useState<boolean>(false);
+  const [xHandle, setXHandle] = useState<string>("");
+  const [isSubmittingHandle, setIsSubmittingHandle] = useState<boolean>(false);
 
   const checkNFTOwnership = useCallback(
     async (walletAddress: string) => {
@@ -39,7 +46,7 @@ export const VerificationFlow = () => {
         setIsVerifying(true);
 
         // Create a message to sign
-        const message = `Verify NFT ownership for ${walletAddress} at ${Date.now()}`;
+        const message = `Verify Cousin NFT ownership for ${walletAddress} at ${Date.now()}`;
         const messageBytes = new TextEncoder().encode(message);
 
         // Request signature from wallet
@@ -152,6 +159,60 @@ export const VerificationFlow = () => {
     }
   };
 
+  const handleManualXHandle = async () => {
+    if (!publicKey || !signMessage) {
+      toast.error("Wallet not connected");
+      return;
+    }
+
+    try {
+      setIsSubmittingHandle(true);
+
+      // Create a message to sign
+      const message = `Link X handle @${xHandle} to wallet ${publicKey.toString()} at ${Date.now()}`;
+      const messageBytes = new TextEncoder().encode(message);
+
+      // Request signature from wallet
+      let signature: Uint8Array;
+      try {
+        signature = await signMessage(messageBytes);
+      } catch (error) {
+        console.error("Error signing message:", error);
+        toast.error("Please sign the message to verify wallet ownership");
+        return;
+      }
+
+      const response = await fetch("/api/verify-handle", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          walletAddress: publicKey.toString(),
+          xHandle: xHandle,
+          signature: bs58.encode(signature),
+          message,
+        }),
+      });
+
+      const data = (await response.json()) as { success: boolean, error?: string, status?: number };
+
+      if (!data.success) {
+        throw new Error(data.error ?? "Failed to verify X handle");
+      }
+
+      toast.success("X handle verified successfully!");
+      setShowManualInput(false);
+    } catch (error) {
+      console.error("Error verifying X handle:", error);
+      toast.error(
+        error instanceof Error ? error.message : "Failed to verify X handle",
+      );
+    } finally {
+      setIsSubmittingHandle(false);
+    }
+  };
+
   return (
     <Container size="2">
       <Flex
@@ -219,27 +280,88 @@ export const VerificationFlow = () => {
                 <Text size="2" color="gray" align="center">
                   Connect your X account to join the community
                 </Text>
-                <Button
-                  size="3"
-                  onClick={() => {
-                    void handleXLink();
-                  }}
-                  disabled={isXLinking}
-                  style={{ minWidth: "200px" }}
+                <Flex
+                  direction="column"
+                  gap="2"
+                  align="center"
+                  style={{ width: "100%" }}
                 >
-                  {isXLinking ? (
-                    <Flex gap="2" align="center">
-                      <Spinner size="2" />
-                      <Text>Connecting...</Text>
-                    </Flex>
-                  ) : (
-                    "Link X Account"
-                  )}
-                </Button>
+                  <Button
+                    size="3"
+                    onClick={() => {
+                      void handleXLink();
+                    }}
+                    disabled={isXLinking}
+                    style={{ minWidth: "200px" }}
+                  >
+                    {isXLinking ? (
+                      <Flex gap="2" align="center">
+                        <Spinner size="2" />
+                        <Text>Connecting...</Text>
+                      </Flex>
+                    ) : (
+                      "Link X Account"
+                    )}
+                  </Button>
+                  <Text size="2" color="gray" align="center">
+                    or
+                  </Text>
+                  <Button
+                    size="3"
+                    variant="outline"
+                    onClick={() => setShowManualInput(true)}
+                    style={{ minWidth: "200px" }}
+                  >
+                    Enter X Handle Manually
+                  </Button>
+                </Flex>
               </Flex>
             )}
           </Flex>
         </Card>
+
+        <Dialog.Root open={showManualInput} onOpenChange={setShowManualInput}>
+          <Dialog.Content style={{ maxWidth: 450 }}>
+            <Dialog.Title>Enter Your X Handle</Dialog.Title>
+            <Dialog.Description size="2" mb="4">
+              Please enter your X handle (with or without @)
+            </Dialog.Description>
+
+            <Flex direction="column" gap="3">
+              <TextField.Root
+                placeholder="@username"
+                value={xHandle}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setXHandle(e.target.value)
+                }
+              >
+                <TextField.Slot>
+                  <PersonIcon height="16" width="16" />
+                </TextField.Slot>
+              </TextField.Root>
+              <Flex gap="3" mt="4" justify="end">
+                <Dialog.Close>
+                  <Button variant="soft" color="gray">
+                    Cancel
+                  </Button>
+                </Dialog.Close>
+                <Button
+                  onClick={() => void handleManualXHandle()}
+                  disabled={!xHandle.trim() || isSubmittingHandle}
+                >
+                  {isSubmittingHandle ? (
+                    <Flex gap="2" align="center">
+                      <Spinner size="2" />
+                      <Text>Verifying...</Text>
+                    </Flex>
+                  ) : (
+                    "Verify"
+                  )}
+                </Button>
+              </Flex>
+            </Flex>
+          </Dialog.Content>
+        </Dialog.Root>
       </Flex>
     </Container>
   );

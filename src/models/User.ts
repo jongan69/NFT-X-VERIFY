@@ -10,6 +10,7 @@ export interface IUser extends mongoose.Document {
   tempTokenExpiry?: Date;
   xLinked?: boolean;
   xHandle?: string;
+  xUserId?: string;
   profilePicture?: string;
   createdAt: Date;
   updatedAt: Date;
@@ -29,6 +30,9 @@ const userSchema =
         type: String,
       },
       xHandle: {
+        type: String,
+      },
+      xUserId: {
         type: String,
       },
       profilePicture: {

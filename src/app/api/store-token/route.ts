@@ -24,7 +24,7 @@ export async function POST(request: Request) {
     await connectDB();
 
     // Find user with valid verification token
-    console.log("[store-token] Searching for user with token:", token);
+    // console.log("[store-token] Searching for user with token:", token);
     const user: IUser | null = await User.findOne({
       verificationToken: token,
       verificationTokenExpiry: { $gt: new Date() },

@@ -78,8 +78,8 @@ export const VerifiedCousins = ({ verifiedCousins }: VerifiedCousinsProps) => {
                     <Flex gap="3" align="center">
                       <Avatar
                         size="3"
-                        fallback={cousin.xHandle[0].toUpperCase()}
-                        src={cousin.profilePicture}
+                        fallback={cousin?.xHandle?.toUpperCase()}
+                        src={cousin.profilePicture ?? "./logo.png"}
                         color="blue"
                       />
                       <Flex direction="column" gap="1">
