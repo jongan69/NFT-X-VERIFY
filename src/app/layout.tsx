@@ -1,14 +1,18 @@
 import type { Metadata } from "next";
 import clsx from "clsx";
-
-import { inter } from "@/utils/fonts";
-import { Providers } from "./providers";
-import { WalletContextProvider } from "@/components/Wallet/WalletContextProvider";
-import "@radix-ui/themes/styles.css";
 import { Toaster } from "react-hot-toast";
+
+// Components
+import { inter } from "@/utils/fonts";
+import { Providers } from "@/components/Theme/providers";
+import { WalletContextProvider } from "@/components/Wallet/WalletContextProvider";
+import { ThemeProvider } from "@/components/Theme/ThemeProvider";
+import Footer from "@/components/Footer";
+
+// Styles
+import "@radix-ui/themes/styles.css";
 import "@/styles/reset.css";
 import "@/styles/globals.css";
-import { ThemeProvider } from "@/components/Theme/ThemeProvider";
 
 export const metadata: Metadata = {
   title: "Cousin NFT X Verification",
@@ -20,11 +24,14 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => (
     className={clsx(inter.className, inter.variable)}
     suppressHydrationWarning
   >
-    <body>
+    <body className="flex min-h-screen flex-col">
       <ThemeProvider attribute="class">
         <WalletContextProvider>
           <Toaster />
-          <Providers>{children}</Providers>
+          <Providers>
+            <main>{children}</main>
+            <Footer />
+          </Providers>
         </WalletContextProvider>
       </ThemeProvider>
     </body>

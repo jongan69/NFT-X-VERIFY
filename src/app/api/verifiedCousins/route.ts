@@ -23,8 +23,8 @@ export async function GET(): Promise<NextResponse<VerifiedCousinsResponse>> {
         $or: [
           { xUsername: { $exists: true } },
           { xHandle: { $exists: true } },
-          { profilePicture: { $exists: true } }
-        ]
+          { profilePicture: { $exists: true } },
+        ],
       },
       { xUsername: 1, xHandle: 1, profilePicture: 1, _id: 0 },
     );
