@@ -13,7 +13,7 @@ import styles from "./page.module.css";
 interface VerifiedCousin {
   xUsername: string;
   xHandle: string;
-  profilePicture: string;
+  profilePicture?: string;
 }
 
 interface VerifiedCousinsResponse {
@@ -28,6 +28,7 @@ const fetchVerifiedCousins = async (): Promise<VerifiedCousinsResponse> => {
     },
   );
   const data = (await response.json()) as VerifiedCousinsResponse;
+  console.log(data);
   return data;
 };
 

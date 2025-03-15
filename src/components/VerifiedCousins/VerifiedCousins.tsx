@@ -16,7 +16,7 @@ import { FaXTwitter } from "react-icons/fa6";
 interface VerifiedCousin {
   xUsername: string;
   xHandle: string;
-  profilePicture: string;
+  profilePicture?: string;
 }
 
 interface VerifiedCousinsProps {
