@@ -28,12 +28,9 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => (
       <script
         async
         src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6202902142885850"
-        crossOrigin="anonymous">
-      </script>
-      <meta
-        name="description"
-        content="Cousin NFT X Verification"
-      />
+        crossOrigin="anonymous"
+      ></script>
+      <meta name="description" content="Cousin NFT X Verification" />
       <link rel="icon" href="/favicon.ico" />
 
       <link
